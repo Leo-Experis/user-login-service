@@ -1,0 +1,33 @@
+server:
+  port: 5000
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  datasource:
+    url: jdbc:postgresql://<DB_URL>:5432/<DB_NAME>
+    username: <DB_USERNAME>
+    password: <DB_PASSWORD>
+    max-active: 3
+    max-idle: 3
+    data: classpath:data.sql
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  sql:
+    init:
+      mode: always
+
+experisswe:
+  app:
+    jwtSecret: ===============================ExperisSwe=Spring==============================================
+    jwtExpirationMs: 86400000
