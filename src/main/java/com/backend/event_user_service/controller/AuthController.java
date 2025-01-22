@@ -9,9 +9,7 @@ import com.backend.event_user_service.payload.SignupRequest;
 import com.backend.event_user_service.payload.response.JwtResponse;
 import com.backend.event_user_service.repository.RoleRepository;
 import com.backend.event_user_service.repository.UserRepository;
-import com.backend.event_user_service.responses.ErrorResponse;
-import com.backend.event_user_service.responses.Response;
-import com.backend.event_user_service.responses.UserSignUpSuccessResponse;
+import com.backend.event_user_service.responses.*;
 import com.backend.event_user_service.security.jwt.JwtUtils;
 import com.backend.event_user_service.security.services.UserDetailsImpl;
 import jakarta.validation.Valid;
@@ -75,8 +73,9 @@ public class AuthController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        return ResponseEntity
-                .ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles));
+        AuthResponse res = new AuthResponse();
+        res.set(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles));
+        return ResponseEntity.ok(res);
     }
 
     @PostMapping("/signup")
