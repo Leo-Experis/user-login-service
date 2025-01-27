@@ -85,6 +85,7 @@ public class AuthController {
     public ResponseEntity<Response<?>> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
         String givenUsername = signupRequest.getUsername();
         String givenPassword = signupRequest.getPassword();
+        String givenEmail = signupRequest.getEmail();
         ErrorResponse errorResponse = new ErrorResponse();
 
         // Check if username and password are given and not empty
@@ -100,8 +101,13 @@ public class AuthController {
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
 
+        if (userRepository.existsByEmail(signupRequest.getEmail())) {
+            errorResponse.set("Error: Email is already taken");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
         // Create a new user add salt here if using one
-        User user = new User(signupRequest.getUsername(), encoder.encode(signupRequest.getPassword()));
+        User user = new User(signupRequest.getUsername(), encoder.encode(signupRequest.getPassword()), signupRequest.getEmail());
         Set<String> strRoles = signupRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
@@ -132,6 +138,7 @@ public class AuthController {
         // Create a response object
         UserRegisterResponseDTO userRegisterResponseDTO = new UserRegisterResponseDTO();
         userRegisterResponseDTO.setUsername(user.getUsername());
+        userRegisterResponseDTO.setEmail(user.getEmail());
         userRegisterResponseDTO.setRoles(strRoles);
 
         UserSignUpSuccessResponse userSignUpSuccessResponse = new UserSignUpSuccessResponse();
@@ -139,11 +146,9 @@ public class AuthController {
         return new ResponseEntity<>(userSignUpSuccessResponse, HttpStatus.CREATED);
     }
 
-    @PostMapping("/validate")
-    public ResponseEntity<Response<?>> validate(@RequestBody Token token) {
-        System.out.println("Token received for validation: " + token.getToken());
-
-        Boolean decodedToken = jwtUtils.validateJwtToken(token.getToken());
+    @GetMapping("/validate")
+    public ResponseEntity<Response<?>> validate(@RequestHeader("Authorization") Token token) {
+        Boolean decodedToken = jwtUtils.validateJwtToken(token.getToken().substring(7).trim());
         if (decodedToken) {
             return ResponseEntity.ok().build(); // Valid token
         }

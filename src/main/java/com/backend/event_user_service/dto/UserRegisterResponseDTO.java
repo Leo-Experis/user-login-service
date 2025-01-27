@@ -13,5 +13,6 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserRegisterResponseDTO {
     private String username;
+    private String email;
     private Set<String> roles;
 }

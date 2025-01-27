@@ -44,11 +44,12 @@ public class EventUserServiceApplication {
         if (users.findByUsername("admin").isEmpty()) {
             String username = "admin";
             String password = encoder.encode("admin");
+            String email = "admin@admin.com";
 
             Set<Role> rolesToAdd = new HashSet<>();
             Role adminRole = roles.findByName(ERole.ROLE_ADMIN).orElseThrow(() -> new RuntimeException("Error: Role is not found"));
             rolesToAdd.add(adminRole);
-            User newAdmin = new User(username, password);
+            User newAdmin = new User(username, password, email);
             newAdmin.setRoles(rolesToAdd);
             users.save(newAdmin);
         }

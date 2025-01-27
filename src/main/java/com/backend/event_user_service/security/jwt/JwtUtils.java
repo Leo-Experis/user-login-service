@@ -40,7 +40,6 @@ public class JwtUtils {
 
 
     private SecretKey key() {
-        System.out.println(this.jwtSecret);
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.jwtSecret));
     }
 
@@ -50,11 +49,8 @@ public class JwtUtils {
 
 
     public Boolean validateJwtToken(String authToken) {
-        System.out.println("Inside validate TOKEN: " + authToken);
         try {
-            System.out.println("Before JWT ");
             Jwts.parser().verifyWith(this.key()).build().parse(authToken);
-            System.out.println("inside try");
             return true;
         }catch (MalformedJwtException e) {
             logger.error("Invalid JWT token: {}", e.getMessage());
