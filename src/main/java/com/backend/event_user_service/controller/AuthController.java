@@ -3,6 +3,7 @@ package com.backend.event_user_service.controller;
 import com.backend.event_user_service.dto.UserRegisterResponseDTO;
 import com.backend.event_user_service.model.ERole;
 import com.backend.event_user_service.model.Role;
+import com.backend.event_user_service.model.Token;
 import com.backend.event_user_service.model.User;
 import com.backend.event_user_service.payload.LoginRequest;
 import com.backend.event_user_service.payload.SignupRequest;
@@ -52,6 +53,7 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+
         if (loginRequest.getUsername().isEmpty() || loginRequest.getPassword().isEmpty()) {
             ErrorResponse errorResponse = new ErrorResponse();
             errorResponse.set("Bad input");
@@ -65,6 +67,7 @@ public class AuthController {
         } catch (BadCredentialsException e) {
             ErrorResponse errorResponse = new ErrorResponse();
             errorResponse.set("incorrect username or password");
+
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -134,6 +137,17 @@ public class AuthController {
         UserSignUpSuccessResponse userSignUpSuccessResponse = new UserSignUpSuccessResponse();
         userSignUpSuccessResponse.set(userRegisterResponseDTO);
         return new ResponseEntity<>(userSignUpSuccessResponse, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<Response<?>> validate(@RequestBody Token token) {
+        System.out.println("Token received for validation: " + token.getToken());
+
+        Boolean decodedToken = jwtUtils.validateJwtToken(token.getToken());
+        if (decodedToken) {
+            return ResponseEntity.ok().build(); // Valid token
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Invalid token
     }
 
     @ExceptionHandler
