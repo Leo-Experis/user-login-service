@@ -14,5 +14,6 @@ import java.util.Set;
 public class UserRegisterResponseDTO {
     private String username;
     private String email;
+    private Boolean profileSet;
     private Set<String> roles;
 }

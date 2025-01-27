@@ -32,13 +32,17 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Column
+    private Boolean profileSet;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User(String username, String password, String email) {
+    public User(String username, String password, String email, Boolean profileSet) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.profileSet = profileSet;
     }
 }

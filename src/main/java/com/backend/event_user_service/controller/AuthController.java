@@ -77,7 +77,7 @@ public class AuthController {
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         AuthResponse res = new AuthResponse();
-        res.set(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles));
+        res.set(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), userDetails.getProfileSet(), roles));
         return ResponseEntity.ok(res);
     }
 
@@ -107,7 +107,7 @@ public class AuthController {
         }
 
         // Create a new user add salt here if using one
-        User user = new User(signupRequest.getUsername(), encoder.encode(signupRequest.getPassword()), signupRequest.getEmail());
+        User user = new User(signupRequest.getUsername(), encoder.encode(signupRequest.getPassword()), signupRequest.getEmail(), false);
         Set<String> strRoles = signupRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
@@ -139,6 +139,7 @@ public class AuthController {
         UserRegisterResponseDTO userRegisterResponseDTO = new UserRegisterResponseDTO();
         userRegisterResponseDTO.setUsername(user.getUsername());
         userRegisterResponseDTO.setEmail(user.getEmail());
+        userRegisterResponseDTO.setProfileSet(user.getProfileSet());
         userRegisterResponseDTO.setRoles(strRoles);
 
         UserSignUpSuccessResponse userSignUpSuccessResponse = new UserSignUpSuccessResponse();
