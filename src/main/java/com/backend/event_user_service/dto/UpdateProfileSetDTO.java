@@ -11,4 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UpdateProfileSetDTO {
     private boolean profileSet;
+    private Integer profileID;
 }

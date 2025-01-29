@@ -79,8 +79,8 @@ public class UserController {
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
 
-        System.out.println("This is in /profile/username " + input.isProfileSet());
         oldUser.setProfileSet(input.isProfileSet());
+        oldUser.setProfileID(input.getProfileID());
 
         User newUser = repository.save(oldUser);
         UserResponse userResponse = new UserResponse();

@@ -49,7 +49,7 @@ public class EventUserServiceApplication {
             Set<Role> rolesToAdd = new HashSet<>();
             Role adminRole = roles.findByName(ERole.ROLE_ADMIN).orElseThrow(() -> new RuntimeException("Error: Role is not found"));
             rolesToAdd.add(adminRole);
-            User newAdmin = new User(username, password, email, true);
+            User newAdmin = new User(username, password, email, true, 1);
             newAdmin.setRoles(rolesToAdd);
             users.save(newAdmin);
         }
