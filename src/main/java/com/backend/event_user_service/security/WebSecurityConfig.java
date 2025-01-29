@@ -73,6 +73,7 @@ public class WebSecurityConfig {
                        // Users endpoints
                         .requestMatchers(HttpMethod.GET, "/users")
                         .hasAnyAuthority(ERole.ROLE_ADMIN.toString())
+                        .requestMatchers(HttpMethod.PUT, "/users/**").authenticated()
                 );
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

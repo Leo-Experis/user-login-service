@@ -41,7 +41,7 @@ public class EventUserServiceApplication {
         }
 
         // Insert a default admin user into the database (if it doesn't exist already)
-        if (users.findByUsername("admin").isEmpty()) {
+        if (!users.existsByUsername("admin")) {
             String username = "admin";
             String password = encoder.encode("admin");
             String email = "admin@admin.com";

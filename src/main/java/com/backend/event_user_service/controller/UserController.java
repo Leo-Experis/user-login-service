@@ -1,5 +1,6 @@
 package com.backend.event_user_service.controller;
 
+import com.backend.event_user_service.dto.UpdateProfileSetDTO;
 import com.backend.event_user_service.model.User;
 import com.backend.event_user_service.repository.UserRepository;
 import com.backend.event_user_service.responses.ErrorResponse;
@@ -9,6 +10,7 @@ import com.backend.event_user_service.responses.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,6 +65,26 @@ public class UserController {
         User newUser = repository.save(oldUser);
         UserResponse userResponse = new UserResponse();
         userResponse.set(newUser);
-        return ResponseEntity.ok(userResponse);
+        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/profile/{username}")
+    public ResponseEntity<Response<?>> updateProfileSet(@PathVariable String username, @RequestBody UpdateProfileSetDTO input) {
+        User oldUser = repository.findByUsername(username).orElseThrow(() ->
+                new UsernameNotFoundException("User not found with username" + username));
+
+        if(oldUser == null) {
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.set("User not found");
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+
+        System.out.println("This is in /profile/username " + input.isProfileSet());
+        oldUser.setProfileSet(input.isProfileSet());
+
+        User newUser = repository.save(oldUser);
+        UserResponse userResponse = new UserResponse();
+        userResponse.set(newUser);
+        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
 }
